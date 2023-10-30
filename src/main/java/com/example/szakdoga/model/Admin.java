@@ -7,19 +7,15 @@ import lombok.Setter;
 @Getter //nem kell megirni annotáción keresztül használom
 @Setter //nem kell megirni annotáción keresztül használom
 @Entity //Entitás lesz
-@Table(name = "player") //tábla létrehozása
+@Table(name = "admin") //tábla létrehozása
 
-public class Player {
+public class Admin {
     @Id
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
-    private String sports;
-    private String location;
-    private Integer age;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String username;
     private String password;
-    private String first_name;
-    private String last_name;
-
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
