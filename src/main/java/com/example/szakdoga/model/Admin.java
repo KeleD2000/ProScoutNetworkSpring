@@ -13,8 +13,6 @@ public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String username;
-    private String password;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

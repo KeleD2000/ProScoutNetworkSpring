@@ -11,14 +11,16 @@ import lombok.Setter;
 
 public class Player {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
-    private String sports;
+    private String email;
+    private String sport;
     private String location;
+    private String position;
     private Integer age;
-    private String username;
-    private String password;
     private String first_name;
     private String last_name;
 

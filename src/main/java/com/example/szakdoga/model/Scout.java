@@ -14,8 +14,7 @@ public class Scout {
     private Integer id;
     private String sport;
     private String team;
-    private String username;
-    private String password;
+    private String email;
     private String first_name;
     private String last_name;
     @OneToOne
