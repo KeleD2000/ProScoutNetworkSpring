@@ -1,6 +1,7 @@
 package com.example.szakdoga.services;
 
 import com.example.szakdoga.model.*;
+import com.example.szakdoga.model.request.LoginRequest;
 import com.example.szakdoga.model.request.PlayerRequest;
 import com.example.szakdoga.model.request.ScoutRequest;
 import com.example.szakdoga.repository.AdminRepository;
@@ -8,10 +9,20 @@ import com.example.szakdoga.repository.PlayerRepository;
 import com.example.szakdoga.repository.ScoutRepository;
 import com.example.szakdoga.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private ScoutRepository scoutRepository;
     @Autowired
@@ -29,7 +40,7 @@ public class UserService {
         }
         User newUser = new User();
         newUser.setUsername(scoutRequest.getUsername());
-        newUser.setPassword(scoutRequest.getPassword());
+        newUser.setPassword(passwordEncoder.encode(scoutRequest.getPassword()));
         if(scoutRequest.getRoles().equals(Roles.SCOUT.name())) {
             newUser.setRoles(Roles.SCOUT);
             Scout scout = new Scout();
@@ -57,7 +68,7 @@ public class UserService {
         }
         User newUser = new User();
         newUser.setUsername(playerRequest.getUsername());
-        newUser.setPassword(playerRequest.getPassword());
+        newUser.setPassword(passwordEncoder.encode(playerRequest.getPassword()));
         if(playerRequest.getRoles().equals(Roles.PLAYER.name())){
             newUser.setRoles(Roles.PLAYER);
             Player player = new Player();
@@ -78,5 +89,14 @@ public class UserService {
         }
         userRepository.save(newUser);
         return newUser;
+    }
+
+    public UserDetails login(LoginRequest loginRequest) {
+        try {
+            Authentication userDetails = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            return (UserDetails) userDetails.getPrincipal();
+        } catch (AuthenticationException authe) {
+            throw new RuntimeException("Hibás felhasználónév vagy jelszó.");
+        }
     }
 }

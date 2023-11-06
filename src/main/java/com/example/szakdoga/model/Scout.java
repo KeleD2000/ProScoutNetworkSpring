@@ -17,7 +17,7 @@ public class Scout {
     private String email;
     private String first_name;
     private String last_name;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 }
