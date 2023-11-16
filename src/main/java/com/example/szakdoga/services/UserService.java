@@ -8,6 +8,7 @@ import com.example.szakdoga.repository.AdminRepository;
 import com.example.szakdoga.repository.PlayerRepository;
 import com.example.szakdoga.repository.ScoutRepository;
 import com.example.szakdoga.repository.UserRepository;
+import exception.InvalidUsernameOrPasswordException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -96,7 +97,7 @@ public class UserService {
             Authentication userDetails = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
             return (UserDetails) userDetails.getPrincipal();
         } catch (AuthenticationException authe) {
-            throw new RuntimeException("Hibás felhasználónév vagy jelszó.");
+            throw new InvalidUsernameOrPasswordException("Hibás felhasználónév vagy jelszó.");
         }
     }
 }
