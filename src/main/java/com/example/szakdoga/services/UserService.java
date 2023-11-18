@@ -1,13 +1,11 @@
 package com.example.szakdoga.services;
 
 import com.example.szakdoga.model.*;
+import com.example.szakdoga.model.request.FileRequest;
 import com.example.szakdoga.model.request.LoginRequest;
 import com.example.szakdoga.model.request.PlayerRequest;
 import com.example.szakdoga.model.request.ScoutRequest;
-import com.example.szakdoga.repository.AdminRepository;
-import com.example.szakdoga.repository.PlayerRepository;
-import com.example.szakdoga.repository.ScoutRepository;
-import com.example.szakdoga.repository.UserRepository;
+import com.example.szakdoga.repository.*;
 import exception.InvalidUsernameOrPasswordException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,8 +13,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -32,6 +40,7 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private AdminRepository adminRepository;
+
 
 
 
@@ -100,4 +109,10 @@ public class UserService {
             throw new InvalidUsernameOrPasswordException("Hibás felhasználónév vagy jelszó.");
         }
     }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Felhasználó nem található: " + username));
+    }
+
 }

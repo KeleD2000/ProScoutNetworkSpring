@@ -1,5 +1,6 @@
 package com.example.szakdoga.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +12,12 @@ import lombok.Setter;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Ettől lesz autoincrement
-    private Integer user_id;
+    private Integer id;
     private String username;
     private String password;
     @Enumerated(EnumType.STRING) //
     private Roles roles;
-
+    @OneToOne(mappedBy = "user")
+    @JsonBackReference(value = "player_id")
+    private Player player;
 }

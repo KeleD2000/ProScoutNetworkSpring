@@ -1,10 +1,15 @@
 package com.example.szakdoga.controller;
 
+import com.example.szakdoga.model.File;
 import com.example.szakdoga.model.User;
+import com.example.szakdoga.model.request.FileRequest;
 import com.example.szakdoga.model.request.LoginRequest;
 import com.example.szakdoga.model.request.PlayerRequest;
 import com.example.szakdoga.model.request.ScoutRequest;
 import com.example.szakdoga.services.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +38,25 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public UserDetails login(@RequestBody LoginRequest loginRequest){
+    public UserDetails login(@RequestBody LoginRequest loginRequest) {
         return userService.login(loginRequest);
     }
+
+
+    @GetMapping("/current-user")
+    public User getCurrentUser() {
+        // Az aktuális bejelentkezett felhasználó adatainak lekérése
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication);
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+
+            String username = userDetails.getUsername();
+            System.out.println(username);
+            return userService.getUserByUsername(username);
+        }
+        return null;
+    }
+
 }
+
+
