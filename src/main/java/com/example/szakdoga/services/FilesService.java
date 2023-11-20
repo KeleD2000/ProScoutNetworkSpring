@@ -7,12 +7,16 @@ import com.example.szakdoga.model.request.FileRequest;
 import com.example.szakdoga.repository.FilesRepository;
 import com.example.szakdoga.repository.PlayerRepository;
 import com.example.szakdoga.repository.UserRepository;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -66,4 +70,31 @@ public class FilesService {
             throw new RuntimeException();
         }
     }
+
+    public byte[] getProfilePic(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        Optional<Player> player = playerRepository.findByUserId(user.get().getId());
+
+        for (File f : player.get().getFiles()) {
+            if (f.getType().equals("profilpic")) {
+                Path imagePath = Paths.get(f.getFile_path());
+
+                try {
+                    if (Files.exists(imagePath)) {
+                        return Files.readAllBytes(imagePath);
+                    } else {
+                        // Ha a kép nem létezik, visszaadjunk null-t vagy egy alapértelmezett képet
+                        return null;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Hiba a profilkép lekérése közben", e);
+                }
+            }
+        }
+
+        // Ha a felhasználónak nincs profilképe, visszaadjunk null-t vagy egy alapértelmezett képet
+        return null;
+    }
+
 }
