@@ -71,6 +71,44 @@ public class FilesService {
         }
     }
 
+    public File handlePdfUpload(String type, String format, String username, MultipartFile file){
+        if (file.isEmpty()) {
+            throw new RuntimeException("Hiba");
+        }
+        Optional<User> user = userRepository.findByUsername(username);
+        Optional<Player> player = playerRepository.findByUserId(user.get().getId());
+        System.out.println(player);
+        try {
+            for (File f : player.get().getFiles()) {
+                if (f.getType().equals("pdf")) {
+                    Path path = Paths.get("src/pdf/" + f.getFile_path());
+                    if (Files.exists(path)) {
+                        Files.delete(path);
+                    }
+                }
+
+            }
+            // Fájl nevének generálása
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+            // Fájl mentése
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get("src/pdf/" + fileName);
+            Files.write(path, bytes);
+            // Entitás létrehozása és mentése az adatbázisban
+            File files = new File();
+            files.setFormat(format);
+            files.setType(type);
+            files.setFile_path(String.valueOf(path));
+            files.setPlayer(player.get());
+            filesRepository.save(files);
+            return files;
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
+    }
+
     public byte[] getProfilePic(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         Optional<Player> player = playerRepository.findByUserId(user.get().getId());
@@ -78,6 +116,7 @@ public class FilesService {
         for (File f : player.get().getFiles()) {
             if (f.getType().equals("profilpic")) {
                 Path imagePath = Paths.get(f.getFile_path());
+                System.out.println(imagePath);
 
                 try {
                     if (Files.exists(imagePath)) {

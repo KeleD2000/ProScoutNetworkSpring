@@ -24,6 +24,12 @@ public class FilesController {
         return  filesService.handleFileUpload(type, format, username, file);
     }
 
+    @PostMapping("/uploadPdf")
+    public File handlePdfUpload(@RequestParam("type") String type, @RequestParam("format") String format, @RequestParam("username") String username,  @RequestParam("file") @RequestPart(value = "file", required = true) MultipartFile file) {
+        return filesService.handlePdfUpload(type, format, username, file);
+    }
+
+
     @GetMapping("/profilkep/{username}")
     public ResponseEntity<byte[]> getProfilePic(@PathVariable String username) {
         byte[] imageBytes = filesService.getProfilePic(username);
