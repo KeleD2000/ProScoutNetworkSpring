@@ -7,6 +7,7 @@ import com.example.szakdoga.model.request.LoginRequest;
 import com.example.szakdoga.model.request.PlayerRequest;
 import com.example.szakdoga.model.request.ScoutRequest;
 import com.example.szakdoga.services.UserService;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,20 +44,10 @@ public class UserController {
     }
 
 
-    @GetMapping("/current-user")
-    public User getCurrentUser() {
-        // Az aktuális bejelentkezett felhasználó adatainak lekérése
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication);
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-
-            String username = userDetails.getUsername();
-            System.out.println(username);
-            return userService.getUserByUsername(username);
-        }
-        return null;
+    @GetMapping("/current-user/{username}")
+    public User getCurrentUser(@PathVariable String username) {
+        return userService.getUserByUsername(username);
     }
-
 }
 
 

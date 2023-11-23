@@ -18,6 +18,7 @@ public class User {
     @Enumerated(EnumType.STRING) //
     private Roles roles;
     @OneToOne(mappedBy = "user")
-    @JsonBackReference(value = "player_id")
     private Player player;
+    @OneToOne(mappedBy = "user")
+    private Scout scout;
 }

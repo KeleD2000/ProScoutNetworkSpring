@@ -1,5 +1,6 @@
 package com.example.szakdoga.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ public class File {
     private String format;
     private String file_path;
     @ManyToOne //amit küldök mintami kulcs át lesz adva egy a többnél
+    @JsonIgnore //lekérem a fájlt, akkor nem irja ki a player adatait
     private Player player;
 
 }
