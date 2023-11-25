@@ -67,6 +67,17 @@ public class FilesController {
         }
     }
 
+    @GetMapping("videos/{fileId}/download")
+    public ResponseEntity<byte[]> downloadVideo(@PathVariable Long fileId) {
+        byte[] videoContent = filesService.downloadVideo(fileId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "video.mp4");
+
+        return new ResponseEntity<>(videoContent, headers, HttpStatus.OK);
+    }
+
     @DeleteMapping("/deleteProfilePic/{username}")
     public ResponseEntity<Void> deleteProfilePic(@PathVariable String username) {
         filesService.deleteProfilePic(username);

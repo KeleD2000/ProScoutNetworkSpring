@@ -157,6 +157,31 @@ public class FilesService {
         return Files.readAllBytes(path);
     }
 
+    public String getVideoUrl(Long fileId) {
+        Optional<File> optionalFile = filesRepository.findById(fileId);
+        if (optionalFile.isPresent()) {
+            return "/api/videos/" + fileId + "/download";
+        } else {
+            throw new RuntimeException("A fájl nem található");
+        }
+    }
+
+    public byte[] downloadVideo(Long fileId) {
+        Optional<File> optionalFile = filesRepository.findById(fileId);
+        if (optionalFile.isPresent()) {
+            File file = optionalFile.get();
+            try {
+                Path path = Paths.get(file.getFile_path());
+                return Files.readAllBytes(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Hiba a videó letöltése közben");
+            }
+        } else {
+            throw new RuntimeException("A fájl nem található");
+        }
+    }
+
     public byte[] getProfilePic(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         Optional<Player> player = playerRepository.findByUserId(user.get().getId());
