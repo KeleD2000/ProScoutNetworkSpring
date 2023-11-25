@@ -2,11 +2,9 @@ package com.example.szakdoga.controller;
 
 import com.example.szakdoga.model.File;
 import com.example.szakdoga.model.User;
-import com.example.szakdoga.model.request.FileRequest;
-import com.example.szakdoga.model.request.LoginRequest;
-import com.example.szakdoga.model.request.PlayerRequest;
-import com.example.szakdoga.model.request.ScoutRequest;
+import com.example.szakdoga.model.request.*;
 import com.example.szakdoga.services.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,6 +34,26 @@ public class UserController {
     public User registerPlayer(@RequestBody PlayerRequest playerRequest) throws Exception {
         System.out.println(playerRequest);
         return userService.registerPlayer(playerRequest);
+    }
+
+    @PatchMapping("/update_profile")
+    public ResponseEntity<?> updateProfile(@RequestBody UpdatePlayerRequest updatedPlayerRequest) {
+        try {
+            User updatedUser = userService.updatePlayerProfile(updatedPlayerRequest);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete_player_profile/{username}")
+    public ResponseEntity<?> deletePlayerProfile(@PathVariable String username) {
+        try {
+            userService.deletePlayerProfile(username);
+            return ResponseEntity.ok("Profil sikeresen törölve");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/login")

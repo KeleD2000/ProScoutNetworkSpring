@@ -17,8 +17,8 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING) //
     private Roles roles;
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     private Player player;
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Scout scout;
 }

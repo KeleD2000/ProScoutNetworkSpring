@@ -1,10 +1,7 @@
 package com.example.szakdoga.services;
 
 import com.example.szakdoga.model.*;
-import com.example.szakdoga.model.request.FileRequest;
-import com.example.szakdoga.model.request.LoginRequest;
-import com.example.szakdoga.model.request.PlayerRequest;
-import com.example.szakdoga.model.request.ScoutRequest;
+import com.example.szakdoga.model.request.*;
 import com.example.szakdoga.repository.*;
 import exception.InvalidUsernameOrPasswordException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -40,6 +38,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private AdminRepository adminRepository;
+    @Autowired
+    private FilesRepository filesRepository;
 
 
 
@@ -100,6 +100,52 @@ public class UserService {
         userRepository.save(newUser);
         return newUser;
     }
+
+    public User updatePlayerProfile(UpdatePlayerRequest updatedPlayerRequest) throws Exception {
+        User user = userRepository.findByUsername(updatedPlayerRequest.getUsername())
+                .orElseThrow(() -> new Exception("Felhasználó nem található"));
+
+        if (updatedPlayerRequest.getLast_name() != null) {
+            user.getPlayer().setLast_name(updatedPlayerRequest.getLast_name());
+        }
+        if (updatedPlayerRequest.getFirst_name() != null) {
+            user.getPlayer().setFirst_name(updatedPlayerRequest.getFirst_name());
+        }
+       if(updatedPlayerRequest.getEmail() != null){
+           user.getPlayer().setEmail(updatedPlayerRequest.getEmail());
+       }
+       if(updatedPlayerRequest.getLocation() != null){
+           user.getPlayer().setLocation(updatedPlayerRequest.getLocation());
+       }
+       if(updatedPlayerRequest.getSport() != null){
+           user.getPlayer().setSport(updatedPlayerRequest.getSport());
+       }
+       if(updatedPlayerRequest.getAge() != null){
+           user.getPlayer().setAge(updatedPlayerRequest.getAge());
+       }
+       if(updatedPlayerRequest.getPosition() != null){
+           user.getPlayer().setPosition(updatedPlayerRequest.getPosition());
+       }
+        userRepository.save(user);
+        return user;
+    }
+
+    public void deletePlayerProfile(String username) throws Exception {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new Exception("Felhasználó nem található"));
+
+        // Töröld a játékos fájljait, ha vannak
+        if (user.getRoles() == Roles.PLAYER) {
+            Player player = user.getPlayer();
+            List<File> files = filesRepository.findByPlayer(player);
+            filesRepository.deleteAll(files);
+        }
+
+        // Töröld a játékost
+        userRepository.delete(user);
+    }
+
+
 
     public UserDetails login(LoginRequest loginRequest) {
         try {
