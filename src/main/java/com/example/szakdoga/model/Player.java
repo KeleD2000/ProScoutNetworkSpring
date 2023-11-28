@@ -30,5 +30,7 @@ public class Player {
     private String last_name;
     @OneToMany(mappedBy = "player") //így adom át egy a több kapcsolatnál a kulcsot
     private List<File>files; //ez is kell
+    @OneToMany(mappedBy = "player")
+    private List<PlayerAd>playerAds;
 
 }
