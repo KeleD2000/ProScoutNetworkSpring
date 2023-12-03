@@ -127,4 +127,28 @@ public class PlayerAdService {
     public List<PlayerAd> getAllPlayerAds() {
         return playerAdRepository.findAll();
     }
+
+
+    public byte[] getPlayerAdImageById(Integer playerAdId) {
+        Optional<PlayerAd> playerAd = playerAdRepository.findById(playerAdId);
+
+        if (playerAd.isPresent()) {
+            String photoPath = playerAd.get().getPhoto_path();
+            if (photoPath != null) {
+                Path imagePath = Paths.get(photoPath);
+                try {
+                    if (Files.exists(imagePath)) {
+                        return Files.readAllBytes(imagePath);
+                    } else {
+                        return null;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Hiba a kép lekérése közben", e);
+                }
+            }
+        }
+
+        return null;
+    }
 }

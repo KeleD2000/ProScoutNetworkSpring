@@ -3,6 +3,10 @@ package com.example.szakdoga.controller;
 import com.example.szakdoga.model.PlayerAd;
 import com.example.szakdoga.model.request.PlayerAdRequest;
 import com.example.szakdoga.services.PlayerAdService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,5 +41,19 @@ public class PlayerAdController {
     @GetMapping("/playerAds")
     public List<PlayerAd> getAllPlayerAds() {
         return playerAdService.getAllPlayerAds();
+    }
+
+    @GetMapping("/adsImage/{playerAdId}")
+    public ResponseEntity<byte[]> getPlayerAdImage(@PathVariable Integer playerAdId) {
+        byte[] imageBytes = playerAdService.getPlayerAdImageById(playerAdId);
+
+        if (imageBytes != null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG); // vagy MediaType.IMAGE_PNG stb., a kép típusától függően
+
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

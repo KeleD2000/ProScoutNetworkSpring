@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter //nem kell megirni annotáción keresztül használom
 @Setter //nem kell megirni annotáción keresztül használom
 @Entity //Entitás lesz
@@ -19,4 +21,10 @@ public class PlayerAd {
     @JsonIgnore //lekérem a fájlt, akkor nem irja ki a player adatait
     private Player player;
 
+    public String getPhotoPathUrl() {
+        if (photo_path != null) {
+            return "/adsPhotos/" + playerad_id + "/" + photo_path;
+        }
+        return null;
+    }
 }
