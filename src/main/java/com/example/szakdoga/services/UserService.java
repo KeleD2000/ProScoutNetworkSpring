@@ -161,4 +161,12 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Felhasználó nem található: " + username));
     }
 
+    public List<Player> getAllPlayers() {
+        return playerRepository.findAll();
+    }
+
+    public List<Scout> getAllScout() {
+        return scoutRepository.findAll();
+    }
+
 }

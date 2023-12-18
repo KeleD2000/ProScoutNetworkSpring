@@ -15,6 +15,7 @@ public class User {
     private Integer id;
     private String username;
     private String password;
+    private String profilePictureName = null;
     @Enumerated(EnumType.STRING) //
     private Roles roles;
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)

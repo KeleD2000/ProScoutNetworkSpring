@@ -1,6 +1,8 @@
 package com.example.szakdoga.controller;
 
 import com.example.szakdoga.model.File;
+import com.example.szakdoga.model.Player;
+import com.example.szakdoga.model.Scout;
 import com.example.szakdoga.model.User;
 import com.example.szakdoga.model.request.*;
 import com.example.szakdoga.services.UserService;
@@ -11,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(maxAge = 0, value = "*")
@@ -66,6 +70,18 @@ public class UserController {
     public User getCurrentUser(@PathVariable String username) {
         return userService.getUserByUsername(username);
     }
+
+    @GetMapping("/players")
+    public ResponseEntity<List<Player>> getAllPlayers() {
+        List<Player> players = userService.getAllPlayers();
+        return ResponseEntity.ok(players);
+    }
+    @GetMapping("/scouts")
+    public ResponseEntity<List<Scout>> getAllScouts() {
+        List<Scout> scout = userService.getAllScout();
+        return ResponseEntity.ok(scout);
+    }
+
 }
 
 
