@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter //nem kell megirni annotáción keresztül használom
 @Setter //nem kell megirni annotáción keresztül használom
 @Entity //Entitás lesz
@@ -15,11 +17,12 @@ public class User {
     private Integer id;
     private String username;
     private String password;
-    private String profilePictureName = null;
     @Enumerated(EnumType.STRING) //
     private Roles roles;
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     private Player player;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Scout scout;
+    @OneToMany(mappedBy = "user") //így adom át egy a több kapcsolatnál a kulcsot
+    private List<File> files; //ez is kell
 }

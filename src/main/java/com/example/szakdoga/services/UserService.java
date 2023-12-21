@@ -130,14 +130,36 @@ public class UserService {
         return user;
     }
 
+    public User updateScoutProfile(UpdateScoutRequest updateScoutRequest) throws Exception {
+        User user = userRepository.findByUsername(updateScoutRequest.getUsername())
+                .orElseThrow(() -> new Exception("Felhasználó nem található"));
+
+        if(updateScoutRequest.getTeam() != null){
+            user.getScout().setTeam(updateScoutRequest.getTeam());
+        }
+        if (updateScoutRequest.getLast_name() != null) {
+            user.getScout().setLast_name(updateScoutRequest.getLast_name());
+        }
+        if (updateScoutRequest.getFirst_name() != null) {
+            user.getScout().setFirst_name(updateScoutRequest.getFirst_name());
+        }
+        if(updateScoutRequest.getEmail() != null){
+            user.getScout().setEmail(updateScoutRequest.getEmail());
+        }
+        if(updateScoutRequest.getSport() != null){
+            user.getScout().setSport(updateScoutRequest.getSport());
+        }
+        userRepository.save(user);
+        return user;
+    }
+
     public void deletePlayerProfile(String username) throws Exception {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new Exception("Felhasználó nem található"));
 
         // Töröld a játékos fájljait, ha vannak
         if (user.getRoles() == Roles.PLAYER) {
-            Player player = user.getPlayer();
-            List<File> files = filesRepository.findByPlayer(player);
+            List<File> files = filesRepository.findByUser(user);
             filesRepository.deleteAll(files);
         }
 

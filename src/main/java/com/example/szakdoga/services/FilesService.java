@@ -40,9 +40,8 @@ public class FilesService {
         }
 
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<Player> player = playerRepository.findByUserId(user.get().getId());
         try {
-            for (File f : player.get().getFiles()) {
+            for (File f : user.get().getFiles()) {
                 if (f.getType().equals("profilpic")) {
                     Path path = Paths.get("src/profilePic/" + f.getFile_path());
                     if (Files.exists(path)) {
@@ -63,13 +62,27 @@ public class FilesService {
             files.setFormat(format);
             files.setType(type);
             files.setFile_path(String.valueOf(path));
-            files.setPlayer(player.get());
+            files.setUser(user.get());
             filesRepository.save(files);
             return files;
         } catch (Exception e) {
             throw new RuntimeException();
         }
     }
+
+    public byte[] getProfilePictureAsBytes(Integer userId) {
+        String filePath = filesRepository.findProfilePicturePathByUserId(userId);
+        if (filePath != null && !filePath.isEmpty()) {
+            try {
+                Path path = Paths.get(filePath);
+                return Files.readAllBytes(path);
+            } catch (IOException e) {
+                // Kezelje a kivételt (pl. logolás)
+            }
+        }
+        return null;
+    }
+
     public File handleVideoFile(String type, String format, String username, MultipartFile file) {
         // Ellenőrizd, hogy a fájl ne legyen üres
         if (file.isEmpty()) {
@@ -77,9 +90,8 @@ public class FilesService {
         }
 
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<Player> player = playerRepository.findByUserId(user.get().getId());
         try {
-            for (File f : player.get().getFiles()) {
+            for (File f : user.get().getFiles()) {
                 if (f.getType().equals("video")) {
                     Path path = Paths.get("src/video/" + f.getFile_path());
                     if (Files.exists(path)) {
@@ -100,7 +112,7 @@ public class FilesService {
             files.setFormat(format);
             files.setType(type);
             files.setFile_path(String.valueOf(path));
-            files.setPlayer(player.get());
+            files.setUser(user.get());
             filesRepository.save(files);
             return files;
         } catch (Exception e) {
@@ -113,10 +125,8 @@ public class FilesService {
             throw new RuntimeException("Hiba");
         }
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<Player> player = playerRepository.findByUserId(user.get().getId());
-        System.out.println(player);
         try {
-            for (File f : player.get().getFiles()) {
+            for (File f : user.get().getFiles()) {
                 if (f.getType().equals("pdf")) {
                     Path path = Paths.get("src/pdf/" + f.getFile_path());
                     if (Files.exists(path)) {
@@ -137,7 +147,7 @@ public class FilesService {
             files.setFormat(format);
             files.setType(type);
             files.setFile_path(String.valueOf(path));
-            files.setPlayer(player.get());
+            files.setUser(user.get());
             filesRepository.save(files);
             return files;
         } catch (Exception e) {
@@ -184,9 +194,8 @@ public class FilesService {
 
     public byte[] getProfilePic(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<Player> player = playerRepository.findByUserId(user.get().getId());
 
-        for (File f : player.get().getFiles()) {
+        for (File f : user.get().getFiles()) {
             if (f.getType().equals("profilpic")) {
                 Path imagePath = Paths.get(f.getFile_path());
                 System.out.println(imagePath);
@@ -211,9 +220,8 @@ public class FilesService {
 
     public void deleteProfilePic(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<Player> player = playerRepository.findByUserId(user.get().getId());
 
-        for (File f : player.get().getFiles()) {
+        for (File f : user.get().getFiles()) {
             if (f.getType().equals("profilpic")) {
                 Path imagePath = Paths.get(f.getFile_path());
 

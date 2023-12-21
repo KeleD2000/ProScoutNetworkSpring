@@ -18,6 +18,6 @@ public class File {
     private String file_path;
     @ManyToOne //amit küldök mintami kulcs át lesz adva egy a többnél
     @JsonIgnore //lekérem a fájlt, akkor nem irja ki a player adatait
-    private Player player;
+    private User user;
 
 }

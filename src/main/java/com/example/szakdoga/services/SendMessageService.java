@@ -3,26 +3,49 @@ package com.example.szakdoga.services;
 import com.example.szakdoga.model.Player;
 import com.example.szakdoga.model.Scout;
 import com.example.szakdoga.model.SendMessage;
+import com.example.szakdoga.model.dto.MessagesDto;
+import com.example.szakdoga.model.dto.ReceiverAllDto;
+import com.example.szakdoga.model.dto.ReceiverUserDto;
 import com.example.szakdoga.model.dto.SendMessageDto;
+import com.example.szakdoga.repository.FilesRepository;
 import com.example.szakdoga.repository.SendMessageRepository;
 import com.example.szakdoga.repository.UserRepository;
+import org.aspectj.bridge.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class SendMessageService {
-    private final SendMessageRepository sendMessageRepository;
-    private final UserRepository userRepository;
 
-    public SendMessageService(SendMessageRepository sendMessageRepository, UserRepository userRepository) {
-        this.sendMessageRepository = sendMessageRepository;
-        this.userRepository = userRepository;
+    @Autowired
+    private SendMessageRepository sendMessageRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private FilesRepository filesRepository;
+    @Autowired
+    private FilesService filesService;
+
+    public List<ReceiverAllDto> getAllMessages() {
+        List<ReceiverUserDto> allReceiver = userRepository.findAllActiveUsers();
+        List<ReceiverAllDto> allDetails = new ArrayList<>();
+        for (ReceiverUserDto r: allReceiver) {
+            ReceiverAllDto receiverAllDto = new ReceiverAllDto();
+            receiverAllDto.setId(r.getId());
+            receiverAllDto.setUsername(r.getUsername());
+            receiverAllDto.setMessage_content(sendMessageRepository.msgReceiver(r.getId()));
+            receiverAllDto.setProfilePicture(filesService.getProfilePictureAsBytes(r.getId()));
+            allDetails.add(receiverAllDto);
+        }
+        return allDetails;
     }
 
-    public List<SendMessageDto> getAllMessage(Integer senderUserId, Integer receiverUserId) {
+    /*public List<SendMessageDto> getAllMessage(Integer senderUserId, Integer receiverUserId) {
         List<SendMessage> messages = sendMessageRepository.findAllBySenderUserIdAndReceiverUserId(senderUserId,receiverUserId);
         List<SendMessage> messages1 = sendMessageRepository.findAllBySenderUserIdAndReceiverUserId(receiverUserId, senderUserId);
         messages.addAll(messages1);
@@ -69,5 +92,5 @@ public class SendMessageService {
                 .collect(Collectors.toList());
 
         return messageDtoList;
-    }
+    }*/
 }

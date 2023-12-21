@@ -50,6 +50,16 @@ public class UserController {
         }
     }
 
+    @PatchMapping("/update_scout")
+    public ResponseEntity<?> updateScout(@RequestBody UpdateScoutRequest updateScoutRequest) {
+        try {
+            User updatedUser = userService.updateScoutProfile(updateScoutRequest);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/delete_player_profile/{username}")
     public ResponseEntity<?> deletePlayerProfile(@PathVariable String username) {
         try {
