@@ -167,6 +167,20 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    public void deleteScoutProfile(String username) throws Exception {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new Exception("Felhasználó nem található"));
+
+        // Töröld a játékos fájljait, ha vannak
+        if (user.getRoles() == Roles.SCOUT) {
+            List<File> files = filesRepository.findByUser(user);
+            filesRepository.deleteAll(files);
+        }
+
+        // Töröld a játékost
+        userRepository.delete(user);
+    }
+
 
 
     public UserDetails login(LoginRequest loginRequest) {

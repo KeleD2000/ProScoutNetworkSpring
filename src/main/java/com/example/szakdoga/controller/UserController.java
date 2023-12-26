@@ -70,6 +70,16 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/delete_scout_profile/{username}")
+    public ResponseEntity<?> deleteScoutProfile(@PathVariable String username) {
+        try {
+            userService.deleteScoutProfile(username);
+            return ResponseEntity.ok("Profil sikeresen törölve");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/login")
     public UserDetails login(@RequestBody LoginRequest loginRequest) {
         return userService.login(loginRequest);
