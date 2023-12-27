@@ -1,12 +1,11 @@
 package exception.handler;
 
+import exception.*;
 import exception.Error;
-import exception.InvalidUsernameOrPasswordException;
-import exception.UserExistException;
-import exception.UsernameIsExsistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
@@ -29,6 +28,11 @@ public class HandlerException {
     @ExceptionHandler({UserExistException.class})
     public ResponseEntity<Object> handleUserExsist(UserExistException exception){
         return buildResponseEntity(new Error(HttpStatus.NOT_FOUND, exception.getMessage()));
+    }
+
+    @ExceptionHandler(PlayerSearchNotFoundException.class)
+    public ResponseEntity<Object> handleEntityNotFound(PlayerSearchNotFoundException e) {
+        return buildResponseEntity(new Error(HttpStatus.NOT_FOUND, e.getMessage()));
     }
 
 }

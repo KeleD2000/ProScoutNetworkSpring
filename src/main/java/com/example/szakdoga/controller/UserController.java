@@ -1,9 +1,6 @@
 package com.example.szakdoga.controller;
 
-import com.example.szakdoga.model.File;
-import com.example.szakdoga.model.Player;
-import com.example.szakdoga.model.Scout;
-import com.example.szakdoga.model.User;
+import com.example.szakdoga.model.*;
 import com.example.szakdoga.model.request.*;
 import com.example.szakdoga.services.UserService;
 import org.springframework.http.ResponseEntity;
@@ -102,6 +99,17 @@ public class UserController {
         return ResponseEntity.ok(scout);
     }
 
+    @GetMapping("/search-scout")
+    public ResponseEntity<List<Player>> searchPlayers(@RequestParam String searchTerm) {
+        List<Player> players = userService.findPlayersBySearchTerm(searchTerm);
+        return ResponseEntity.ok(players);
+    }
+
+    @GetMapping("/search-player")
+    public ResponseEntity<List<Scout>> searchScout(@RequestParam String searchTerm) {
+        List<Scout> scouts = userService.findScoutsBySearchTerm(searchTerm);
+        return ResponseEntity.ok(scouts);
+    }
 }
 
 

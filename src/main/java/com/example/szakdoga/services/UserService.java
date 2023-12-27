@@ -4,6 +4,8 @@ import com.example.szakdoga.model.*;
 import com.example.szakdoga.model.request.*;
 import com.example.szakdoga.repository.*;
 import exception.InvalidUsernameOrPasswordException;
+import exception.PlayerSearchNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -205,4 +208,19 @@ public class UserService {
         return scoutRepository.findAll();
     }
 
+    public List<Player> findPlayersBySearchTerm(String searchTerm) {
+        List<Player> players = playerRepository.findByMultipleFields(searchTerm);
+        if (players.isEmpty()) {
+            throw new PlayerSearchNotFoundException("Nincsen találat erre a keresésre. " + searchTerm);
+        }
+        return players;
+    }
+
+    public List<Scout> findScoutsBySearchTerm(String searchTerm) {
+        List<Scout> scouts = scoutRepository.findByMultipleFields(searchTerm);
+        if (scouts.isEmpty()) {
+            throw new PlayerSearchNotFoundException("Nincsen találat erre a keresésre. " + searchTerm);
+        }
+        return scouts;
+    }
 }

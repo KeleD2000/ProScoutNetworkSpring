@@ -17,4 +17,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u.id AS id, u.username AS username FROM User u WHERE u.id IN (SELECT s.receiverUser.id FROM SendMessage s)")
     List<ReceiverUserDto> findAllActiveUsers();
 
+
 }
