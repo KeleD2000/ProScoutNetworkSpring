@@ -29,4 +29,5 @@ public class SendMessage {
     @JoinColumn(name = "receiver_user_id")
     @JsonIgnore
     private User receiverUser;
+
 }

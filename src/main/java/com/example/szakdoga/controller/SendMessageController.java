@@ -21,9 +21,9 @@ public class SendMessageController {
         this.sendMessageService = sendMessageService;
     }
 
-    @GetMapping("/receiver-users")
-    public List<ReceiverAllDto>getReceiver(){
-        return sendMessageService.getAllMessages();
+    @GetMapping("/messages/latest/{receiverUserId}")
+    public List<ReceiverAllDto> getLatestMessagesByReceiver(@PathVariable Integer receiverUserId) {
+        return sendMessageService.getAllMessagesForReceiver(receiverUserId);
     }
 
     /*@GetMapping("/message/{senderUserId}/{receiverUserId}")

@@ -13,7 +13,7 @@ import java.util.List;
 public interface SendMessageRepository extends JpaRepository<SendMessage, Integer> {
     List<SendMessage> findAllBySenderUserIdAndReceiverUserId(Integer senderUserId, Integer receiverUserId);
 
-    @Query("SELECT s.message_content FROM SendMessage s WHERE s.receiverUser.id = :id ORDER BY s.message_id DESC LIMIT 1")
-    String msgReceiver(@Param("id") Integer id);
+    @Query("SELECT sm FROM SendMessage sm WHERE sm.message_id IN (SELECT MAX(s.message_id) FROM SendMessage s WHERE s.receiverUser.id = :receiverId GROUP BY s.senderUser.id) ORDER BY sm.message_id DESC")
+    List<SendMessage> findAllLatestMessagesByReceiverUserId(@Param("receiverId") Integer receiverId);
 
 }

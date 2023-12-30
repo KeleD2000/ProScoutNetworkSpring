@@ -31,15 +31,15 @@ public class SendMessageService {
     @Autowired
     private FilesService filesService;
 
-    public List<ReceiverAllDto> getAllMessages() {
-        List<ReceiverUserDto> allReceiver = userRepository.findAllActiveUsers();
+    public List<ReceiverAllDto> getAllMessagesForReceiver(Integer receiverId) {
+        List<SendMessage> messages = sendMessageRepository.findAllLatestMessagesByReceiverUserId(receiverId);
         List<ReceiverAllDto> allDetails = new ArrayList<>();
-        for (ReceiverUserDto r: allReceiver) {
+
+        for (SendMessage message : messages) {
             ReceiverAllDto receiverAllDto = new ReceiverAllDto();
-            receiverAllDto.setId(r.getId());
-            receiverAllDto.setUsername(r.getUsername());
-            receiverAllDto.setMessage_content(sendMessageRepository.msgReceiver(r.getId()));
-            receiverAllDto.setProfilePicture(filesService.getProfilePictureAsBytes(r.getId()));
+            receiverAllDto.setId(message.getSenderUser().getId());
+            receiverAllDto.setUsername(message.getSenderUser().getUsername());
+            receiverAllDto.setMessage_content(message.getMessage_content());
             allDetails.add(receiverAllDto);
         }
         return allDetails;

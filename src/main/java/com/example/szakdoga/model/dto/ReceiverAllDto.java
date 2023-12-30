@@ -11,5 +11,4 @@ public class ReceiverAllDto {
     private Integer id;
     private String username;
     private String message_content;
-    private byte[] profilePicture;
 }
