@@ -6,6 +6,7 @@ import com.example.szakdoga.model.dto.ReceiverAllDto;
 import com.example.szakdoga.model.dto.ReceiverUserDto;
 import com.example.szakdoga.model.dto.SendMessageDto;
 import com.example.szakdoga.services.SendMessageService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +27,12 @@ public class SendMessageController {
         return sendMessageService.getAllMessagesForReceiver(receiverUserId);
     }
 
-    /*@GetMapping("/message/{senderUserId}/{receiverUserId}")
-    public List<SendMessageDto> getMessages(@PathVariable Integer senderUserId, @PathVariable Integer receiverUserId){
-        return sendMessageService.getAllMessage(senderUserId, receiverUserId);
-    }*/
+    @GetMapping("/conversation")
+    public ResponseEntity<List<SendMessage>> getConversation(
+            @RequestParam Integer senderId,
+            @RequestParam Integer receiverId) {
+        List<SendMessage> messages = sendMessageService.getConversation(senderId, receiverId);
+        return ResponseEntity.ok(messages);
+    }
+
 }

@@ -43,10 +43,6 @@ public class UserService {
     private AdminRepository adminRepository;
     @Autowired
     private FilesRepository filesRepository;
-
-
-
-
     public User registerScout(ScoutRequest scoutRequest) throws Exception{
         if(userRepository.findByUsername(scoutRequest.getUsername()).isPresent()){
             throw new Exception("Ugyanaz a felhasználónév");
@@ -184,8 +180,6 @@ public class UserService {
         userRepository.delete(user);
     }
 
-
-
     public UserDetails login(LoginRequest loginRequest) {
         try {
             Authentication userDetails = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -200,12 +194,11 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Felhasználó nem található: " + username));
     }
 
-    public List<Player> getAllPlayers() {
-        return playerRepository.findAll();
+    public List<PlayerInfo> getAllPlayersWithUsernames() {
+        return playerRepository.findAllPlayersWithUsernames();
     }
-
-    public List<Scout> getAllScout() {
-        return scoutRepository.findAll();
+    public List<ScoutInfo> getAllScoutsWithUsernames() {
+        return scoutRepository.findAllScoutsWithUsernames();
     }
 
     public List<Player> findPlayersBySearchTerm(String searchTerm) {
@@ -223,4 +216,5 @@ public class UserService {
         }
         return scouts;
     }
+
 }

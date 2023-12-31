@@ -22,12 +22,10 @@ public class SendMessage {
 
     @ManyToOne
     @JoinColumn(name = "sender_user_id")
-    @JsonIgnore
     private User senderUser;
 
     @ManyToOne
     @JoinColumn(name = "receiver_user_id")
-    @JsonIgnore
     private User receiverUser;
 
 }

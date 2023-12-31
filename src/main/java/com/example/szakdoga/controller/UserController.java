@@ -89,14 +89,14 @@ public class UserController {
     }
 
     @GetMapping("/players")
-    public ResponseEntity<List<Player>> getAllPlayers() {
-        List<Player> players = userService.getAllPlayers();
+    public ResponseEntity<List<PlayerInfo>> getAllPlayersWithUsernames() {
+        List<PlayerInfo> players = userService.getAllPlayersWithUsernames();
         return ResponseEntity.ok(players);
     }
     @GetMapping("/scouts")
-    public ResponseEntity<List<Scout>> getAllScouts() {
-        List<Scout> scout = userService.getAllScout();
-        return ResponseEntity.ok(scout);
+    public ResponseEntity<List<ScoutInfo>> getAllWithUsernames() {
+        List<ScoutInfo> scouts = userService.getAllScoutsWithUsernames();
+        return ResponseEntity.ok(scouts);
     }
 
     @GetMapping("/search-scout")
@@ -110,6 +110,7 @@ public class UserController {
         List<Scout> scouts = userService.findScoutsBySearchTerm(searchTerm);
         return ResponseEntity.ok(scouts);
     }
+
 }
 
 

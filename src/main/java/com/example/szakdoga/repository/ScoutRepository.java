@@ -1,7 +1,9 @@
 package com.example.szakdoga.repository;
 
 import com.example.szakdoga.model.Player;
+import com.example.szakdoga.model.PlayerInfo;
 import com.example.szakdoga.model.Scout;
+import com.example.szakdoga.model.ScoutInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,5 +22,9 @@ public interface ScoutRepository extends JpaRepository<Scout, Integer> {
             "s.team LIKE %:searchTerm% OR " +
             "s.sport LIKE %:searchTerm%")
     List<Scout> findByMultipleFields(@Param("searchTerm") String searchTerm);
+
+    @Query("SELECT new com.example.szakdoga.model.ScoutInfo(s, s.user.username) FROM Scout s")
+    List<ScoutInfo> findAllScoutsWithUsernames();
 }
+
 

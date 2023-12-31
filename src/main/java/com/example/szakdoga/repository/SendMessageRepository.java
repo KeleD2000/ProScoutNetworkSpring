@@ -16,4 +16,6 @@ public interface SendMessageRepository extends JpaRepository<SendMessage, Intege
     @Query("SELECT sm FROM SendMessage sm WHERE sm.message_id IN (SELECT MAX(s.message_id) FROM SendMessage s WHERE s.receiverUser.id = :receiverId GROUP BY s.senderUser.id) ORDER BY sm.message_id DESC")
     List<SendMessage> findAllLatestMessagesByReceiverUserId(@Param("receiverId") Integer receiverId);
 
+    @Query("SELECT m FROM SendMessage m WHERE (m.senderUser.id = :senderId AND m.receiverUser.id = :receiverId) OR (m.senderUser.id = :receiverId AND m.receiverUser.id = :senderId)")
+    List<SendMessage> findMessagesBetweenUsers(Integer senderId, Integer receiverId);
 }

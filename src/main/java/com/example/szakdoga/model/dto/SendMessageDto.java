@@ -13,11 +13,7 @@ public class SendMessageDto {
     private String dateTime;
     private boolean readed;
     private Integer senderUserId;
-    private String senderUserFirstName;
-    private String senderUserLastName;
+    private String senderUsername;
     private Integer receiverUserId;
-    private String receiverUserFirstName;
-    private String receiverUserLastName;
-    private String senderUserProfilePicture;
-    private String receiverUserProfilePicture;
+    private String receiverUsername;
 }
