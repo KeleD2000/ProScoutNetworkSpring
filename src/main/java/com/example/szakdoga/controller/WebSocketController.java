@@ -42,11 +42,10 @@ public class WebSocketController {
         entity.setMessage_content(chatMessage.getMessage_content());
         entity.setDateTime(chatMessage.getDateTime());
         entity.setReaded(chatMessage.isReaded());
-        System.out.println(entity.getMessage_content() + " " + entity.getReceiverUser().getUsername());
-        System.out.println();
-        sendMessageRepository.save(entity);
+        SendMessage sendMessage = sendMessageRepository.save(entity);
+        chatMessage.setId(sendMessage.getMessage_id());
 
         // Üzenet küldése a megfelelő címzettnek (receiverUserId)
-        simpMessagingTemplate.convertAndSend("/queue/private/" + receiverId, chatMessage);
+        simpMessagingTemplate.convertAndSend("/queue/private/" + receiver.getUsername(), chatMessage);
     }
 }
