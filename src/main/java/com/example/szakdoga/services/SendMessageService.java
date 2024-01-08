@@ -25,13 +25,6 @@ public class SendMessageService {
 
     @Autowired
     private SendMessageRepository sendMessageRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private FilesRepository filesRepository;
-    @Autowired
-    private FilesService filesService;
-
     public List<ReceiverAllDto> getAllMessagesForReceiver(Integer receiverId) {
         List<SendMessage> messages = sendMessageRepository.findAllLatestMessagesByReceiverUserId(receiverId);
         List<ReceiverAllDto> allDetails = new ArrayList<>();

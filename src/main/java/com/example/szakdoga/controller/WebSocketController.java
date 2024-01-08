@@ -12,6 +12,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDateTime;
+
 @Controller
 public class WebSocketController {
     private final SendMessageRepository sendMessageRepository;
@@ -40,8 +42,8 @@ public class WebSocketController {
         entity.setSenderUser(sender);
         entity.setReceiverUser(receiver);
         entity.setMessage_content(chatMessage.getMessage_content());
-        entity.setDateTime(chatMessage.getDateTime());
         entity.setReaded(chatMessage.isReaded());
+        entity.setTimestamp(LocalDateTime.now());
         SendMessage sendMessage = sendMessageRepository.save(entity);
         chatMessage.setId(sendMessage.getMessage_id());
 
