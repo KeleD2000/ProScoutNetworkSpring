@@ -34,6 +34,7 @@ public class SendMessageService {
             receiverAllDto.setId(message.getSenderUser().getId());
             receiverAllDto.setUsername(message.getSenderUser().getUsername());
             receiverAllDto.setMessage_content(message.getMessage_content());
+            receiverAllDto.setTimestamp(message.getTimestamp());
             allDetails.add(receiverAllDto);
         }
         return allDetails;
