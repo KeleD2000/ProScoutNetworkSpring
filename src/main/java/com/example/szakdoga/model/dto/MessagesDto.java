@@ -13,7 +13,6 @@ public class MessagesDto {
     private Integer message_id;
     private Date date_time;
     private String message_content;
-    private Boolean readed;
     private Integer receiver_user_id;
     private Integer sender_user_id;
 }

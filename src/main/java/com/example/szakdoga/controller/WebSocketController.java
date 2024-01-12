@@ -42,7 +42,6 @@ public class WebSocketController {
         entity.setSenderUser(sender);
         entity.setReceiverUser(receiver);
         entity.setMessage_content(chatMessage.getMessage_content());
-        entity.setReaded(chatMessage.isReaded());
         entity.setTimestamp(LocalDateTime.now());
         SendMessage sendMessage = sendMessageRepository.save(entity);
         chatMessage.setId(sendMessage.getMessage_id());
