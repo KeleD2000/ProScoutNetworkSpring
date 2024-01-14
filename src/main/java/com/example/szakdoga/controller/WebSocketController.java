@@ -26,6 +26,15 @@ public class WebSocketController {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
+    @MessageMapping("/notify/{username}")
+    public void sendNotification(@DestinationVariable String username, @Payload String message) {
+        System.out.println("Sending notification to: " + username);
+        System.out.println(message);
+        System.out.println("Notification sent to: " + username);
+        simpMessagingTemplate.convertAndSend("/queue/notify/" + username, message);
+    }
+
+
     @MessageMapping("/chat.sendPrivateMessage/{receiverId}")
     public void sendPrivateMessage(@DestinationVariable Integer receiverId, @Payload SendMessageDto chatMessage) {
         User sender = userRepository.findById(chatMessage.getSenderUserId()).orElse(null);
