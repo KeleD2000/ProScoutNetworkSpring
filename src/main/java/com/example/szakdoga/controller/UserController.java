@@ -11,7 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(maxAge = 0, value = "*")
@@ -109,6 +111,27 @@ public class UserController {
     public ResponseEntity<List<Scout>> searchScout(@RequestParam String searchTerm) {
         List<Scout> scouts = userService.findScoutsBySearchTerm(searchTerm);
         return ResponseEntity.ok(scouts);
+    }
+
+    @PostMapping("/bid/connect/{username}")
+    public ResponseEntity<Map<String, String>> connectUser(@PathVariable String username) {
+        try {
+            userService.connectUser(username);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Felhasználó sikeresen csatlakoztatva");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+
+
+    @GetMapping("/bid/connected")
+    public List<User> getConnectedUsers() {
+        return userService.getConnectedUsers();
     }
 
 }

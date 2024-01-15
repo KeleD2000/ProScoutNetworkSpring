@@ -6,6 +6,7 @@ import com.example.szakdoga.repository.*;
 import exception.InvalidUsernameOrPasswordException;
 import exception.PlayerSearchNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Getter
 @Service
 public class UserService {
     @Autowired
@@ -43,6 +45,7 @@ public class UserService {
     private AdminRepository adminRepository;
     @Autowired
     private FilesRepository filesRepository;
+
     public User registerScout(ScoutRequest scoutRequest) throws Exception{
         if(userRepository.findByUsername(scoutRequest.getUsername()).isPresent()){
             throw new Exception("Ugyanaz a felhasználónév");
@@ -217,4 +220,18 @@ public class UserService {
         return scouts;
     }
 
+    private final List<User> connectedUsers = new ArrayList<>();
+    public void connectUser(String username) throws Exception{
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new Exception("Felhasználó nem található"));
+
+        if (!connectedUsers.contains(user)) {
+            connectedUsers.add(user);
+        }
+    }
+
+    public List<User> getConnectedUsers() {
+        System.out.println(connectedUsers);
+        return connectedUsers;
+    }
 }

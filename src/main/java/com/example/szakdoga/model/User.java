@@ -23,6 +23,8 @@ public class User {
     private Player player;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Scout scout;
-    @OneToMany(mappedBy = "user") //így adom át egy a több kapcsolatnál a kulcsot
+    @OneToMany(mappedBy = "user",  fetch = FetchType.EAGER) //így adom át egy a több kapcsolatnál a kulcsot
     private List<File> files; //ez is kell
+
+
 }

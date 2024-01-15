@@ -28,9 +28,6 @@ public class WebSocketController {
 
     @MessageMapping("/notify/{username}")
     public void sendNotification(@DestinationVariable String username, @Payload String message) {
-        System.out.println("Sending notification to: " + username);
-        System.out.println(message);
-        System.out.println("Notification sent to: " + username);
         simpMessagingTemplate.convertAndSend("/queue/notify/" + username, message);
     }
 

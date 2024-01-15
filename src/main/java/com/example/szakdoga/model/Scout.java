@@ -26,6 +26,7 @@ public class Scout {
     private String email;
     private String first_name;
     private String last_name;
-    @OneToMany(mappedBy = "scout")
+    @OneToMany(mappedBy = "scout", fetch = FetchType.EAGER)
+
     private List<ScoutAd> scoutAds;
 }
