@@ -5,7 +5,6 @@ import com.example.szakdoga.model.request.*;
 import com.example.szakdoga.repository.*;
 import exception.InvalidUsernameOrPasswordException;
 import exception.PlayerSearchNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,15 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -234,4 +226,5 @@ public class UserService {
         System.out.println(connectedUsers);
         return connectedUsers;
     }
+
 }
