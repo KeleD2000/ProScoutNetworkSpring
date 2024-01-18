@@ -28,7 +28,7 @@ public class Player {
     private Integer age;
     private String first_name;
     private String last_name;
-    @OneToMany(mappedBy = "player")
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
     private List<PlayerAd>playerAds;
 
 }

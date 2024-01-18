@@ -3,6 +3,8 @@ package com.example.szakdoga.controller;
 import com.example.szakdoga.model.NotificationPayload;
 import com.example.szakdoga.model.SendMessage;
 import com.example.szakdoga.model.User;
+import com.example.szakdoga.model.dto.GroupMessageDto;
+import com.example.szakdoga.model.dto.ReceiverDto;
 import com.example.szakdoga.model.dto.SendMessageDto;
 import com.example.szakdoga.repository.SendMessageRepository;
 import com.example.szakdoga.repository.UserRepository;
@@ -16,7 +18,9 @@ import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -73,10 +77,21 @@ public class WebSocketController {
         simpMessagingTemplate.convertAndSend("/queue/private/" + receiver.getUsername(), chatMessage);
     }
 
+    private void saveSendMessage(@Payload SendMessageDto chatMessage, User sender, User user1) {
+        SendMessage entity = new SendMessage();
+        entity.setSenderUser(sender);
+        entity.setReceiverUser(user1);
+        entity.setMessage_content(chatMessage.getMessage_content());
+        entity.setTimestamp(LocalDateTime.now());
+        SendMessage sendMessage = sendMessageRepository.save(entity);
+        chatMessage.setId(sendMessage.getMessage_id());
+    }
+
+
     @MessageMapping("/chat.sendPrivateMessageToUsers/{userId1}/{userId2}")
     public void sendPrivateMessageToUsers(@DestinationVariable Integer userId1,
                                           @DestinationVariable Integer userId2,
-                                          @Payload SendMessageDto chatMessage) {
+                                          @Payload GroupMessageDto chatMessage) {
         User sender = userRepository.findById(chatMessage.getSenderUserId()).orElse(null);
         User user1 = userRepository.findById(userId1).orElse(null);
         User user2 = userRepository.findById(userId2).orElse(null);
@@ -86,19 +101,29 @@ public class WebSocketController {
         }
 
         // Mentés az adatbázisba
-        saveSendMessage(chatMessage, sender, user1);
-        saveSendMessage(chatMessage, sender, user2);
+        saveSendMessageGroup(chatMessage, sender, user1);
+        saveSendMessageGroup(chatMessage, sender, user2);
+
+        System.out.println("GroupChat value: " + chatMessage.isGroupChat());
+
         // Üzenet küldése mindkét címzettnek
+        List<ReceiverDto> receivers = Arrays.asList(
+                new ReceiverDto(user1.getId(), user1.getUsername()),
+                new ReceiverDto(user2.getId(), user2.getUsername())
+        );
+        chatMessage.setReceivers(receivers);
+
         simpMessagingTemplate.convertAndSend("/queue/group/" + user1.getUsername(), chatMessage);
         simpMessagingTemplate.convertAndSend("/queue/group/" + user2.getUsername(), chatMessage);
     }
 
-    private void saveSendMessage(@Payload SendMessageDto chatMessage, User sender, User user1) {
+    private void saveSendMessageGroup(@Payload GroupMessageDto chatMessage, User sender, User user1) {
         SendMessage entity = new SendMessage();
         entity.setSenderUser(sender);
         entity.setReceiverUser(user1);
         entity.setMessage_content(chatMessage.getMessage_content());
         entity.setTimestamp(LocalDateTime.now());
+        entity.setGroupChat(chatMessage.isGroupChat());
         SendMessage sendMessage = sendMessageRepository.save(entity);
         chatMessage.setId(sendMessage.getMessage_id());
     }

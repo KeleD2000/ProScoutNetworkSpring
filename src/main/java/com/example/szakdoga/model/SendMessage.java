@@ -18,6 +18,8 @@ public class SendMessage {
     private Integer message_id;
     private String message_content;
     private LocalDateTime timestamp;
+    @Column(columnDefinition = "TINYINT(1)")
+    private boolean groupChat;
 
     @ManyToOne
     @JoinColumn(name = "sender_user_id")

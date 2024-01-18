@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Getter //nem kell megirni annotáción keresztül használom
 @Setter //nem kell megirni annotáción keresztül használom
@@ -25,6 +26,21 @@ public class User {
     private Scout scout;
     @OneToMany(mappedBy = "user",  fetch = FetchType.EAGER) //így adom át egy a több kapcsolatnál a kulcsot
     private List<File> files; //ez is kell
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        User user = (User) obj;
+        return Objects.equals(id, user.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }

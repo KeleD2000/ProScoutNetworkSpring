@@ -213,7 +213,7 @@ public class UserService {
     }
 
     private final List<User> connectedUsers = new ArrayList<>();
-    public void connectUser(String username) throws Exception{
+    public void connectUser(String username) throws Exception {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new Exception("Felhasználó nem található"));
 
@@ -221,6 +221,7 @@ public class UserService {
             connectedUsers.add(user);
         }
     }
+
 
     public List<User> getConnectedUsers() {
         System.out.println(connectedUsers);
