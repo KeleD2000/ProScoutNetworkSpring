@@ -1,6 +1,8 @@
 package com.example.szakdoga.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,8 +26,11 @@ public class User {
     private Player player;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Scout scout;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Admin admin;
     @OneToMany(mappedBy = "user",  fetch = FetchType.EAGER) //így adom át egy a több kapcsolatnál a kulcsot
     private List<File> files; //ez is kell
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

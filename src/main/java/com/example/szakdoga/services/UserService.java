@@ -5,6 +5,7 @@ import com.example.szakdoga.model.request.*;
 import com.example.szakdoga.repository.*;
 import exception.InvalidUsernameOrPasswordException;
 import exception.PlayerSearchNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -147,6 +148,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public void deletePlayerProfile(String username) throws Exception {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new Exception("Felhasználó nem található"));
@@ -157,7 +159,17 @@ public class UserService {
             filesRepository.deleteAll(files);
         }
 
-        // Töröld a játékost
+        // Töröld a játékos adatait (pl. a játékos rekordot)
+        Player player = user.getPlayer();
+        if (player != null) {
+            // Leállítjuk a kapcsolatot a User és a Player között
+            player.setUser(null); // Fontos: beállítjuk a user referenciát null-ra
+            playerRepository.save(player); // Mentsd el a változtatásokat
+
+            playerRepository.delete(player);
+        }
+
+        // Végül töröld a felhasználót
         userRepository.delete(user);
     }
 

@@ -1,19 +1,18 @@
 package com.example.szakdoga.controller;
 
 import com.example.szakdoga.model.*;
+import com.example.szakdoga.model.dto.UserDto;
 import com.example.szakdoga.model.request.*;
+import com.example.szakdoga.repository.UserRepository;
 import com.example.szakdoga.services.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(maxAge = 0, value = "*")
@@ -23,8 +22,11 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final UserRepository userRepository;
+
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/register_scout")
@@ -127,7 +129,14 @@ public class UserController {
         }
     }
 
-
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserDto> userDTOs = users.stream()
+                .map(user -> new UserDto(user.getId(), user.getUsername(),user.getRoles()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userDTOs);
+    }
 
     @GetMapping("/bid/connected")
     public List<User> getConnectedUsers() {

@@ -1,11 +1,14 @@
 package com.example.szakdoga.controller;
 
 import com.example.szakdoga.model.NotificationPayload;
+import com.example.szakdoga.model.Report;
 import com.example.szakdoga.model.SendMessage;
 import com.example.szakdoga.model.User;
 import com.example.szakdoga.model.dto.GroupMessageDto;
 import com.example.szakdoga.model.dto.ReceiverDto;
+import com.example.szakdoga.model.dto.ReportDto;
 import com.example.szakdoga.model.dto.SendMessageDto;
+import com.example.szakdoga.repository.ReportRepository;
 import com.example.szakdoga.repository.SendMessageRepository;
 import com.example.szakdoga.repository.UserRepository;
 import com.example.szakdoga.services.UserService;
@@ -16,7 +19,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,13 +29,16 @@ import java.util.Map;
 public class WebSocketController {
     private final SendMessageRepository sendMessageRepository;
     private final UserRepository userRepository;
+
+    private final ReportRepository reportRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     private final UserService userService;
 
-    public WebSocketController(SendMessageRepository sendMessageRepository, UserRepository userRepository, SimpMessagingTemplate simpMessagingTemplate, UserService userService) {
+    public WebSocketController(SendMessageRepository sendMessageRepository, UserRepository userRepository, ReportRepository reportRepository, SimpMessagingTemplate simpMessagingTemplate, UserService userService) {
         this.sendMessageRepository = sendMessageRepository;
         this.userRepository = userRepository;
+        this.reportRepository = reportRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.userService = userService;
     }
@@ -56,6 +61,36 @@ public class WebSocketController {
 
         // Az üzenet elküldése a megfelelő címre
         simpMessagingTemplate.convertAndSend("/queue/notify/" + username, notification);
+    }
+
+    @MessageMapping("/report/{receiverId}")
+    public void sendReport(
+            @DestinationVariable Integer receiverId,
+            @Payload ReportDto reportDto){
+        User sender = userRepository.findById(reportDto.getSenderUserId()).orElse(null);
+        User receiver = userRepository.findById(reportDto.getReceiverUserId()).orElse(null);
+
+        if (sender == null) {
+            throw new UserNotFoundException("A küldő felhasználó nem található!");
+        }
+        if (receiver == null) {
+            throw new UserNotFoundException("A fogadó felhasználó nem található!");
+        }
+
+        saveReport(reportDto, sender, receiver);
+
+        simpMessagingTemplate.convertAndSend("/queue/report/" + receiver.getUsername(), reportDto);
+    }
+
+    private void saveReport(@Payload ReportDto reportDto, User sender, User user1) {
+        Report entity = new Report();
+        entity.setSenderUser(sender);
+        entity.setReceiverUser(user1);
+        entity.setReport_content(reportDto.getReport_content());
+        entity.setReport_username(reportDto.getReport_username());
+        entity.setTimestamp(LocalDateTime.now());
+        Report report = reportRepository.save(entity);
+        reportDto.setReport_id(report.getReport_id());
     }
 
 
