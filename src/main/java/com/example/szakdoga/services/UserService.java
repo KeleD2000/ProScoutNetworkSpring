@@ -162,9 +162,12 @@ public class UserService {
         // Töröld a játékos adatait (pl. a játékos rekordot)
         Player player = user.getPlayer();
         if (player != null) {
-            // Leállítjuk a kapcsolatot a User és a Player között
-            player.setUser(null); // Fontos: beállítjuk a user referenciát null-ra
-            playerRepository.save(player); // Mentsd el a változtatásokat
+            // Eltávolítjuk a kapcsolatot a User és a Player között
+            player.setUser(null);
+            playerRepository.save(player);
+
+            // Töröljük a kapcsolódó fájlokat a files táblából
+            filesRepository.deleteByUser(user);
 
             playerRepository.delete(player);
         }
@@ -172,6 +175,7 @@ public class UserService {
         // Végül töröld a felhasználót
         userRepository.delete(user);
     }
+
 
     public void deleteScoutProfile(String username) throws Exception {
         User user = userRepository.findByUsername(username)
@@ -234,10 +238,13 @@ public class UserService {
         }
     }
 
-
     public List<User> getConnectedUsers() {
         System.out.println(connectedUsers);
         return connectedUsers;
+    }
+
+    public Object calculateAverageAdCount() {
+        return playerRepository.calculateAverageAdCountPlayer();
     }
 
 }

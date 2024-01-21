@@ -143,6 +143,11 @@ public class UserController {
         return userService.getConnectedUsers();
     }
 
+    @GetMapping("/avgAdCount")
+    public Object getAverageAdCount() {
+        return userService.calculateAverageAdCount();
+    }
+
 }
 
 

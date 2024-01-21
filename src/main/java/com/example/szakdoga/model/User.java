@@ -28,7 +28,7 @@ public class User {
     private Scout scout;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Admin admin;
-    @OneToMany(mappedBy = "user",  fetch = FetchType.EAGER) //így adom át egy a több kapcsolatnál a kulcsot
+    @OneToMany(mappedBy = "user",  fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true) //így adom át egy a több kapcsolatnál a kulcsot
     private List<File> files; //ez is kell
 
     @Override
