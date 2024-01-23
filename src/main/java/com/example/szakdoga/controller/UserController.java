@@ -5,6 +5,7 @@ import com.example.szakdoga.model.dto.UserDto;
 import com.example.szakdoga.model.request.*;
 import com.example.szakdoga.repository.UserRepository;
 import com.example.szakdoga.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -146,6 +147,30 @@ public class UserController {
     @GetMapping("/avgAdCount")
     public Object getAverageAdCount() {
         return userService.calculateAverageAdCount();
+    }
+
+    @GetMapping("/averagePercentageBySport")
+    public ResponseEntity<List<Object[]>> getAveragePercentageBySport() {
+        List<Object[]> results = userService.getAveragePercentageBySport();
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+    @GetMapping("/averagePercentageBySportScout")
+    public ResponseEntity<List<Object[]>> getAveragePercentageBySportScout() {
+        List<Object[]> results = userService.getAveragePercentageBySportScout();
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+    @GetMapping("/topPlayerBySports")
+    public ResponseEntity<List<Object[]>> getTopPlayerBySport() {
+        List<Object[]> results = userService.getTopPlayerBySport();
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+    @GetMapping("/topScoutBySports")
+    public ResponseEntity<List<Object[]>> getTopScoutBySport() {
+        List<Object[]> results = userService.getTopScoutBySport();
+        return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
 }

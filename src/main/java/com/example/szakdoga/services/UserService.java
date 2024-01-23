@@ -244,7 +244,22 @@ public class UserService {
     }
 
     public Object calculateAverageAdCount() {
-        return playerRepository.calculateAverageAdCountPlayer();
+        return playerRepository.calculateAverageAdCount();
     }
 
+    public List<Object[]> getAveragePercentageBySport() {
+        return playerRepository.calculateAveragePercentageBySport();
+    }
+
+    public List<Object[]> getAveragePercentageBySportScout() {
+        return scoutRepository.calculateAveragePercentageBySport();
+    }
+
+    public List<Object[]> getTopPlayerBySport(){
+        return playerRepository.getTopPlayerBySport();
+    }
+
+    public List<Object[]> getTopScoutBySport(){
+        return scoutRepository.getTopScoutBySport();
+    }
 }
