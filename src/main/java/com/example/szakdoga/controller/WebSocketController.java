@@ -1,13 +1,8 @@
 package com.example.szakdoga.controller;
 
-import com.example.szakdoga.model.NotificationPayload;
-import com.example.szakdoga.model.Report;
-import com.example.szakdoga.model.SendMessage;
-import com.example.szakdoga.model.User;
-import com.example.szakdoga.model.dto.GroupMessageDto;
-import com.example.szakdoga.model.dto.ReceiverDto;
-import com.example.szakdoga.model.dto.ReportDto;
-import com.example.szakdoga.model.dto.SendMessageDto;
+import com.example.szakdoga.model.*;
+import com.example.szakdoga.model.dto.*;
+import com.example.szakdoga.repository.BidRepository;
 import com.example.szakdoga.repository.ReportRepository;
 import com.example.szakdoga.repository.SendMessageRepository;
 import com.example.szakdoga.repository.UserRepository;
@@ -30,17 +25,48 @@ public class WebSocketController {
     private final SendMessageRepository sendMessageRepository;
     private final UserRepository userRepository;
 
+    private final BidRepository bidRepository;
+
     private final ReportRepository reportRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     private final UserService userService;
 
-    public WebSocketController(SendMessageRepository sendMessageRepository, UserRepository userRepository, ReportRepository reportRepository, SimpMessagingTemplate simpMessagingTemplate, UserService userService) {
+    public WebSocketController(SendMessageRepository sendMessageRepository, UserRepository userRepository, BidRepository bidRepository, ReportRepository reportRepository, SimpMessagingTemplate simpMessagingTemplate, UserService userService) {
         this.sendMessageRepository = sendMessageRepository;
         this.userRepository = userRepository;
+        this.bidRepository = bidRepository;
         this.reportRepository = reportRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.userService = userService;
+    }
+
+    @MessageMapping("/bid/{username}")
+    public void sendBid(
+            @DestinationVariable String username,
+            @Payload BidDto bidDto){
+        User sender = userRepository.findById(bidDto.getSenderUserId()).orElse(null);
+        User receiver = userRepository.findById(bidDto.getReceiverUserId()).orElse(null);
+
+        if (sender == null) {
+            throw new UserNotFoundException("A küldő felhasználó nem található!");
+        }
+        if (receiver == null) {
+            throw new UserNotFoundException("A fogadó felhasználó nem található!");
+        }
+
+        saveBid(bidDto, sender, receiver);
+        simpMessagingTemplate.convertAndSend("/queue/bid/" + receiver.getUsername(), bidDto);
+    }
+
+    private void saveBid(@Payload BidDto bidDto, User sender, User user1) {
+        Bid entity = new Bid();
+        entity.setSenderUser(sender);
+        entity.setReceiverUser(user1);
+        entity.setBid_content(bidDto.getBid_content());
+        entity.setTimestamp(LocalDateTime.now());
+        Bid bid = bidRepository.save(entity);
+        bidDto.setBid_id(bid.getBid_id());
     }
 
     @MessageMapping("/notify/{username}")

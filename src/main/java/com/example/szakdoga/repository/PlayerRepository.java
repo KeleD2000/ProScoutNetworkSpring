@@ -40,7 +40,9 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
             ") AS scout_ads", nativeQuery = true)
     List<Object[]> calculateAverageAdCount();
 
-    @Query(value = "SELECT p.sport, (COUNT(DISTINCT pa.playerad_id) / (SELECT COUNT(pa2.playerad_id) FROM player_ad pa2)) * 100 AS atlag_szazalek FROM player p LEFT JOIN player_ad pa ON p.id = pa.player_id GROUP BY p.sport", nativeQuery = true)
+    @Query(value = "SELECT p.sport, (COUNT(DISTINCT pa.playerad_id) / (SELECT COUNT(pa2.playerad_id) " +
+            "FROM player_ad pa2)) * 100 AS atlag_szazalek FROM player p LEFT JOIN player_ad pa " +
+            "ON p.id = pa.player_id GROUP BY p.sport", nativeQuery = true)
     List<Object[]> calculateAveragePercentageBySport();
 
     @Query(value = "WITH RankedPlayers AS (" +
