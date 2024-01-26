@@ -15,6 +15,7 @@ public class Bid {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Ettől lesz autoincrement
     private Integer bid_id;
+    private Integer offer;
     private String bid_content;
     private LocalDateTime timestamp;
 

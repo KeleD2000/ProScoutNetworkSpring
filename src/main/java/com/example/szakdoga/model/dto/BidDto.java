@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class BidDto {
     private Integer bid_id;
     private String bid_content;
+    private Integer offer;
     private LocalDateTime timestamp;
     private Integer senderUserId;
     private String senderUsername;

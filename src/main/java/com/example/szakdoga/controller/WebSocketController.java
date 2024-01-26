@@ -41,12 +41,12 @@ public class WebSocketController {
         this.userService = userService;
     }
 
-    @MessageMapping("/bid/{username}")
+    @MessageMapping("/bid/{receiverUserId}")
     public void sendBid(
-            @DestinationVariable String username,
+            @DestinationVariable Integer receiverUserId,
             @Payload BidDto bidDto){
         User sender = userRepository.findById(bidDto.getSenderUserId()).orElse(null);
-        User receiver = userRepository.findById(bidDto.getReceiverUserId()).orElse(null);
+        User receiver = userRepository.findById(receiverUserId).orElse(null);
 
         if (sender == null) {
             throw new UserNotFoundException("A küldő felhasználó nem található!");
@@ -59,10 +59,12 @@ public class WebSocketController {
         simpMessagingTemplate.convertAndSend("/queue/bid/" + receiver.getUsername(), bidDto);
     }
 
+
     private void saveBid(@Payload BidDto bidDto, User sender, User user1) {
         Bid entity = new Bid();
         entity.setSenderUser(sender);
         entity.setReceiverUser(user1);
+        entity.setOffer(bidDto.getOffer());
         entity.setBid_content(bidDto.getBid_content());
         entity.setTimestamp(LocalDateTime.now());
         Bid bid = bidRepository.save(entity);
