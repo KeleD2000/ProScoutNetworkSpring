@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ScoutAdRepository extends JpaRepository<ScoutAd, Integer> {
-    List<File> findByScout(Scout scout);
+    List<ScoutAd> findByScout(Scout scout);
 }

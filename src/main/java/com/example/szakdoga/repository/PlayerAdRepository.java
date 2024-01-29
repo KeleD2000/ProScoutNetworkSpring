@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface PlayerAdRepository extends JpaRepository<PlayerAd, Integer> {
 
-    List<File> findByPlayer(Player player);
+    List<PlayerAd> findByPlayer(Player player);
 }

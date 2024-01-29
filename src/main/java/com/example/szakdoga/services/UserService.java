@@ -31,6 +31,10 @@ public class UserService {
     @Autowired
     private ScoutRepository scoutRepository;
     @Autowired
+    private ScoutAdRepository scoutAdRepository;
+    @Autowired
+    private PlayerAdRepository playerAdRepository;
+    @Autowired
     private PlayerRepository playerRepository;
     @Autowired
     private UserRepository userRepository;
@@ -155,6 +159,12 @@ public class UserService {
 
         // Töröld a játékos fájljait, ha vannak
         if (user.getRoles() == Roles.PLAYER) {
+            List<PlayerAd> playerAds = playerAdRepository.findByPlayer(user.getPlayer());
+            if (!playerAds.isEmpty()) {
+                // Töröld az összes hirdetést, amelyhez a scout tartozik
+                playerAdRepository.deleteAll(playerAds);
+            }
+
             List<File> files = filesRepository.findByUser(user);
             filesRepository.deleteAll(files);
         }
@@ -181,8 +191,15 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new Exception("Felhasználó nem található"));
 
-        // Töröld a játékos fájljait, ha vannak
         if (user.getRoles() == Roles.SCOUT) {
+            // Ellenőrizzük, hogy van-e hivatkozás a ScoutAd táblában
+            List<ScoutAd> scoutAds = scoutAdRepository.findByScout(user.getScout());
+            if (!scoutAds.isEmpty()) {
+                // Töröld az összes hirdetést, amelyhez a scout tartozik
+                scoutAdRepository.deleteAll(scoutAds);
+            }
+
+            // Töröld a játékos fájljait, ha vannak
             List<File> files = filesRepository.findByUser(user);
             filesRepository.deleteAll(files);
         }
@@ -190,6 +207,7 @@ public class UserService {
         // Töröld a játékost
         userRepository.delete(user);
     }
+
 
     public UserDetails login(LoginRequest loginRequest) {
         try {
