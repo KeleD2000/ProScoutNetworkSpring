@@ -55,9 +55,8 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
             "LEFT JOIN player_ad ON player.id = player_ad.player_id " +
             "GROUP BY player.sport, player_name" +
             ") " +
-            "SELECT sport, player_name, ad_count " +
-            "FROM RankedPlayers " +
-            "WHERE row_num = 1", nativeQuery = true)
+            "SELECT sport, GROUP_CONCAT(player_name SEPARATOR ', ') AS player_names, SUM(ad_count) AS total_ads " +
+            "FROM RankedPlayers WHERE row_num <= 5 GROUP BY sport", nativeQuery = true)
     List<Object[]> getTopPlayerBySport();
 
 

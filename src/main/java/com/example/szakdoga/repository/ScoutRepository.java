@@ -39,9 +39,8 @@ public interface ScoutRepository extends JpaRepository<Scout, Integer> {
             "LEFT JOIN scout_ad ON scout.id = scout_ad.scout_id " +
             "GROUP BY scout.sport, scout_name" +
             ") " +
-            "SELECT sport, scout_name, ad_count " +
-            "FROM RankedScout " +
-            "WHERE row_num = 1", nativeQuery = true)
+            "SELECT sport, GROUP_CONCAT(scout_name SEPARATOR ', ') AS scout_names, SUM(ad_count) AS total_ads " +
+            "FROM RankedScout WHERE row_num <= 5 GROUP BY sport", nativeQuery = true)
     List<Object[]> getTopScoutBySport();
 }
 
