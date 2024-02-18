@@ -16,6 +16,8 @@ import java.util.Optional;
 public interface ScoutRepository extends JpaRepository<Scout, Integer> {
     Optional<Scout> findByUserId(Integer userId);
 
+    Optional<Scout> findByEmail(String email);
+
     @Query("SELECT s FROM Scout s WHERE " +
             "s.first_name LIKE %:searchTerm% OR " +
             "s.last_name LIKE %:searchTerm% OR " +

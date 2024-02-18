@@ -1,10 +1,11 @@
 package com.example.szakdoga.services;
 
+import com.example.szakdoga.exception.EmailIsExistsException;
+import com.example.szakdoga.exception.InvalidUsernameOrPasswordException;
+import com.example.szakdoga.exception.UsernameIsExistsException;
 import com.example.szakdoga.model.*;
 import com.example.szakdoga.model.request.*;
 import com.example.szakdoga.repository.*;
-import exception.InvalidUsernameOrPasswordException;
-import exception.PlayerSearchNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Service
@@ -45,7 +45,10 @@ public class UserService {
 
     public User registerScout(ScoutRequest scoutRequest) throws Exception{
         if(userRepository.findByUsername(scoutRequest.getUsername()).isPresent()){
-            throw new Exception("Ugyanaz a felhasználónév");
+            throw new UsernameIsExistsException("A felhasználó név, már létezik.");
+        }
+        if(scoutRepository.findByEmail(scoutRequest.getEmail()).isPresent()){
+            throw new EmailIsExistsException("Az email cím, már létezik.");
         }
         User newUser = new User();
         newUser.setUsername(scoutRequest.getUsername());
@@ -71,9 +74,12 @@ public class UserService {
     }
 
 
-    public User registerPlayer(PlayerRequest playerRequest) throws Exception {
+    public User registerPlayer(PlayerRequest playerRequest){
         if(userRepository.findByUsername(playerRequest.getUsername()).isPresent()){
-            throw new Exception("Ugyanaz a felhasználónév");
+            throw new UsernameIsExistsException("A felhasználó név, már létezik.");
+        }
+        if(playerRepository.findByEmail(playerRequest.getEmail()).isPresent()){
+            throw new EmailIsExistsException("Az email cím, már létezik.");
         }
         User newUser = new User();
         newUser.setUsername(playerRequest.getUsername());
@@ -233,7 +239,7 @@ public class UserService {
     public List<Player> findPlayersBySearchTerm(String searchTerm) {
         List<Player> players = playerRepository.findByMultipleFields(searchTerm);
         if (players.isEmpty()) {
-            throw new PlayerSearchNotFoundException("Nincsen találat erre a keresésre. " + searchTerm);
+            //throw new PlayerSearchNotFoundException("Nincsen találat erre a keresésre. " + searchTerm);
         }
         return players;
     }
@@ -241,7 +247,7 @@ public class UserService {
     public List<Scout> findScoutsBySearchTerm(String searchTerm) {
         List<Scout> scouts = scoutRepository.findByMultipleFields(searchTerm);
         if (scouts.isEmpty()) {
-            throw new PlayerSearchNotFoundException("Nincsen találat erre a keresésre. " + searchTerm);
+            //throw new PlayerSearchNotFoundException("Nincsen találat erre a keresésre. " + searchTerm);
         }
         return scouts;
     }

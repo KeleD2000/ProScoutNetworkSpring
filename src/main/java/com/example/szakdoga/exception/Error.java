@@ -1,5 +1,4 @@
-package exception;
-
+package com.example.szakdoga.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

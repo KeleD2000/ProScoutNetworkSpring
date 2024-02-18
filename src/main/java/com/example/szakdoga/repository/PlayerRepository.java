@@ -16,6 +16,8 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
 
     Optional<Player> findByUserId(Integer userId);
 
+    Optional<Player> findByEmail(String email);
+
     @Query("SELECT p FROM Player p WHERE " +
             "p.first_name LIKE %:searchTerm% OR " +
             "p.last_name LIKE %:searchTerm% OR " +

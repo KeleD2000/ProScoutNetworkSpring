@@ -7,7 +7,7 @@ import com.example.szakdoga.repository.ReportRepository;
 import com.example.szakdoga.repository.SendMessageRepository;
 import com.example.szakdoga.repository.UserRepository;
 import com.example.szakdoga.services.UserService;
-import exception.UserNotFoundException;
+import com.example.szakdoga.exception.UserNotFoundException;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
