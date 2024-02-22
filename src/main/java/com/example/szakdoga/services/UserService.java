@@ -2,6 +2,7 @@ package com.example.szakdoga.services;
 
 import com.example.szakdoga.exception.EmailIsExistsException;
 import com.example.szakdoga.exception.InvalidUsernameOrPasswordException;
+import com.example.szakdoga.exception.PlayerSearchNotFoundException;
 import com.example.szakdoga.exception.UsernameIsExistsException;
 import com.example.szakdoga.model.*;
 import com.example.szakdoga.model.request.*;
@@ -43,7 +44,7 @@ public class UserService {
     @Autowired
     private FilesRepository filesRepository;
 
-    public User registerScout(ScoutRequest scoutRequest) throws Exception{
+    public User registerScout(ScoutRequest scoutRequest){
         if(userRepository.findByUsername(scoutRequest.getUsername()).isPresent()){
             throw new UsernameIsExistsException("A felhasználó név, már létezik.");
         }
@@ -239,7 +240,7 @@ public class UserService {
     public List<Player> findPlayersBySearchTerm(String searchTerm) {
         List<Player> players = playerRepository.findByMultipleFields(searchTerm);
         if (players.isEmpty()) {
-            //throw new PlayerSearchNotFoundException("Nincsen találat erre a keresésre. " + searchTerm);
+            throw new PlayerSearchNotFoundException("Nincsen találat erre a keresésre. " + searchTerm);
         }
         return players;
     }
@@ -247,7 +248,7 @@ public class UserService {
     public List<Scout> findScoutsBySearchTerm(String searchTerm) {
         List<Scout> scouts = scoutRepository.findByMultipleFields(searchTerm);
         if (scouts.isEmpty()) {
-            //throw new PlayerSearchNotFoundException("Nincsen találat erre a keresésre. " + searchTerm);
+            throw new PlayerSearchNotFoundException("Nincsen találat erre a keresésre. " + searchTerm);
         }
         return scouts;
     }

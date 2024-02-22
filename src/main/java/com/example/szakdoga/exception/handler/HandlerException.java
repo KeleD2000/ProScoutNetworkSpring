@@ -33,4 +33,9 @@ public class HandlerException {
         return buildResponseEntity(new Error(HttpStatus.BAD_REQUEST, exception.getMessage()));
     }
 
+    @ExceptionHandler({PlayerSearchNotFoundException.class})
+    public ResponseEntity<Object> handlePlayerSearchNotFound(PlayerSearchNotFoundException exception){
+        return buildResponseEntity(new Error(HttpStatus.BAD_REQUEST, exception.getMessage()));
+    }
+
 }
