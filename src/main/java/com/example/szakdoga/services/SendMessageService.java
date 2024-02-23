@@ -73,7 +73,7 @@ public class SendMessageService {
 
     }
 
-    private String formatTimestamp(LocalDateTime timestamp) {
+    public String formatTimestamp(LocalDateTime timestamp) {
         // LocalDateTime formázása DateTimeFormatterrel
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         return timestamp.format(formatter);

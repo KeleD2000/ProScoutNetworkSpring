@@ -38,4 +38,19 @@ public class HandlerException {
         return buildResponseEntity(new Error(HttpStatus.BAD_REQUEST, exception.getMessage()));
     }
 
+    @ExceptionHandler({FileUploadException.class})
+    public ResponseEntity<Object> handleFileUpload(FileUploadException exception){
+        return buildResponseEntity(new Error(HttpStatus.BAD_REQUEST, exception.getMessage()));
+    }
+
+    @ExceptionHandler({FileDownloadException.class})
+    public ResponseEntity<Object> handleFileDownload(FileDownloadException exception){
+        return buildResponseEntity(new Error(HttpStatus.BAD_REQUEST, exception.getMessage()));
+    }
+
+    @ExceptionHandler({PlayerAdNotFoundException.class})
+    public ResponseEntity<Object> handlePlayerAdNotFound(PlayerAdNotFoundException exception){
+        return buildResponseEntity(new Error(HttpStatus.BAD_REQUEST, exception.getMessage()));
+    }
+
 }

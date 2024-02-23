@@ -1,5 +1,7 @@
 package com.example.szakdoga.services;
 
+import com.example.szakdoga.exception.FileDownloadException;
+import com.example.szakdoga.exception.FileUploadException;
 import com.example.szakdoga.model.File;
 import com.example.szakdoga.model.Player;
 import com.example.szakdoga.model.User;
@@ -36,7 +38,7 @@ public class FilesService {
     public File handleFileUpload(String type, String format, String username, MultipartFile file) {
         // Ellenőrizd, hogy a fájl ne legyen üres
         if (file.isEmpty()) {
-            throw new RuntimeException("Hiba");
+            throw new FileUploadException("Üresen maradt a fájl helye.");
         }
 
         Optional<User> user = userRepository.findByUsername(username);
@@ -66,11 +68,11 @@ public class FilesService {
             filesRepository.save(files);
             return files;
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new FileUploadException("Hiba történt a feltöltéssel.");
         }
     }
 
-    public byte[] getProfilePictureAsBytes(Integer userId) {
+    /*public byte[] getProfilePictureAsBytes(Integer userId) {
         String filePath = filesRepository.findProfilePicturePathByUserId(userId);
         if (filePath != null && !filePath.isEmpty()) {
             try {
@@ -81,12 +83,12 @@ public class FilesService {
             }
         }
         return null;
-    }
+    }*/
 
     public File handleVideoFile(String type, String format, String username, MultipartFile file) {
         // Ellenőrizd, hogy a fájl ne legyen üres
         if (file.isEmpty()) {
-            throw new RuntimeException("Hiba");
+            throw new FileUploadException("Üres maradt a videó feltöltésének helye.");
         }
 
         Optional<User> user = userRepository.findByUsername(username);
@@ -116,13 +118,13 @@ public class FilesService {
             filesRepository.save(files);
             return files;
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new FileUploadException("Hiba történt a videó feltöltése közben.");
         }
     }
 
     public File handlePdfUpload(String type, String format, String username, MultipartFile file){
         if (file.isEmpty()) {
-            throw new RuntimeException("Hiba");
+            throw new FileUploadException("Üresen maradt a pdf feltöltésének helye.");
         }
         Optional<User> user = userRepository.findByUsername(username);
         try {
@@ -151,7 +153,7 @@ public class FilesService {
             filesRepository.save(files);
             return files;
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new FileUploadException("Hiba történt a pdf fájl feltöltésekor.");
         }
 
     }
@@ -159,21 +161,12 @@ public class FilesService {
     public byte[] downloadPdf(Long fileId) throws IOException {
         // Először lekéred a fájl elérési útvonalát az adatbázisból fileId alapján
         File file = filesRepository.findById(fileId)
-                .orElseThrow(() -> new RuntimeException("A fájl nem található"));
+                .orElseThrow(() -> new FileDownloadException("A fájl nem található"));
 
         Path path = Paths.get(file.getFile_path());
 
         // A fájl tartalmának beolvasása byte tömbbe
         return Files.readAllBytes(path);
-    }
-
-    public String getVideoUrl(Long fileId) {
-        Optional<File> optionalFile = filesRepository.findById(fileId);
-        if (optionalFile.isPresent()) {
-            return "/api/videos/" + fileId + "/download";
-        } else {
-            throw new RuntimeException("A fájl nem található");
-        }
     }
 
     public byte[] downloadVideo(Long fileId) {
@@ -185,10 +178,10 @@ public class FilesService {
                 return Files.readAllBytes(path);
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Hiba a videó letöltése közben");
+                throw new FileDownloadException("Hiba a videó letöltése közben");
             }
         } else {
-            throw new RuntimeException("A fájl nem található");
+            throw new FileDownloadException("A fájl nem található");
         }
     }
 
@@ -209,7 +202,7 @@ public class FilesService {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    throw new RuntimeException("Hiba a profilkép lekérése közben", e);
+                    throw new FileDownloadException("Hiba a profilkép lekérése közben");
                 }
             }
         }
@@ -233,7 +226,7 @@ public class FilesService {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    throw new RuntimeException("Hiba a profilkép törlése közben", e);
+                    throw new FileDownloadException("Hiba a profilkép törlése közben");
                 }
             }
         }

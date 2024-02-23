@@ -1,5 +1,7 @@
 package com.example.szakdoga.services;
 
+import com.example.szakdoga.exception.FileUploadException;
+import com.example.szakdoga.exception.PlayerAdNotFoundException;
 import com.example.szakdoga.model.File;
 import com.example.szakdoga.model.Player;
 import com.example.szakdoga.model.PlayerAd;
@@ -60,20 +62,20 @@ public class PlayerAdService {
                     // Új fájl elérési út beállítása
                     playerAd.setPhoto_path(String.valueOf(path));
                 } catch (IOException e) {
-                    throw new RuntimeException("Hiba történt a kép mentése közben", e);
+                    throw new FileUploadException("Hiba történt a kép mentése közben");
                 }
             }
 
             // PlayerAd mentése
             return playerAdRepository.save(playerAd);
         } else {
-            throw new RuntimeException("Az hirdetés nem található az azonosító alapján: " + adId);
+            throw new PlayerAdNotFoundException("Az hirdetés nem található az azonosító alapján: " + adId);
         }
     }
 
     public PlayerAd uploadAds(String username, String content, MultipartFile file){
         if (file.isEmpty()) {
-            throw new RuntimeException("Hiba");
+            throw new FileUploadException("Hiba");
         }
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         String filePath = UPLOAD_DIR + fileName;
@@ -98,7 +100,7 @@ public class PlayerAdService {
 
             return playerAd;
         } catch (Exception e) {
-            throw new RuntimeException("Hiba történt a fájl mentése közben", e);
+            throw new FileUploadException("Hiba történt a fájl mentése közben");
         }
     }
 
